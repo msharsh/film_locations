@@ -50,6 +50,7 @@ def read_file(filename: str) -> list:
         columns=["Name", "Year", "Location"])
     return df
 
+
 def get_coordinates(df, year: str):
     """
     Add column to the given DataFrame which contains coordinates of
@@ -81,18 +82,34 @@ Returns DataFrames of 10 most close films.
         distance.append(geodesic(coordinates, your_position).kilometers)
     df["Distance"] = distance
     df = df.sort_values(by=["Distance"])
-    df = df[:10]
+    df = df[:20]
     return df
+
 
 def map_creation(df, your_position: tuple):
     """
-    Creation of the map.
+    Creates the map.
+Map contains three layers: main layer, layer with films location in close range
+and layer with films location in long range.
     """
     map = folium.Map(location=your_position, zoom_start=5)
+    layer_main = folium.FeatureGroup(name="Main")
+    layer_close = folium.FeatureGroup(name="Close Range")
+    layer_long = folium.FeatureGroup(name="Long Range")
     for i in range(10):
         name = df.iloc[i, 0]
         df_coordinates = df.iloc[i, 3]
-        map.add_child(folium.Marker(location=df_coordinates, popup=name, icon=folium.Icon()))
+        layer_close.add_child(folium.CircleMarker(location=df_coordinates, popup=name, \
+            radius=10, color='black', fill_color="green", fill_opacity=1))
+    for i in range(10, 20):
+        name = df.iloc[i, 0]
+        df_coordinates = df.iloc[i, 3]
+        layer_long.add_child(folium.CircleMarker(location=df_coordinates, popup=name, \
+            radius=10, color='black', fill_color="red", fill_opacity=1))
+    map.add_child(layer_main)
+    map.add_child(layer_close)
+    map.add_child(layer_long)
+    map.add_child(folium.LayerControl())
     return map
 
 
