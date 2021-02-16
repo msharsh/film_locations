@@ -59,7 +59,7 @@ all films filmed at given year.
     df = df[df["Year"] == year]
     coordinates = []
     geolocator = Nominatim(user_agent="main.py")
-    for i in range(len(df["Location"])):
+    for i in range(120):
         df_location = df.iloc[i, 2]
         location = geolocator.geocode(df_location)
         if location == None:
@@ -114,13 +114,10 @@ and layer with films location in long range.
 
 
 if __name__ == "__main__":
-    # year = input("Please enter a year you would like to have a map for: ")
-    # lat, long_ = input("Please enter your location (format: lat, long): ").split(', ')
-    # your_position = (float(lat), float(long_))
-    # save_path = input("Please enter a path where you would like to save your map: ")
-    year = '2020'
-    your_position = (49.817545, 24.023932)
-    save_path = 'film_locations.html'
+    year = input("Please enter a year you would like to have a map for: ")
+    lat, long_ = input("Please enter your location (format: lat, long): ").split(', ')
+    your_position = (float(lat), float(long_))
+    save_path = input("Please enter a path where you would like to save your map: ")
     df = read_file("Lab_2/film_locations/DataStorage/locations.list")
     df = get_coordinates(df, year)
     df = calculate_distance(df, your_position)
